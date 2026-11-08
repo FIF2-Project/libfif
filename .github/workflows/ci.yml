@@ -21,7 +21,7 @@ jobs:
     name: Windows x64 (clang, generic)
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install image libraries (vcpkg, static)
         shell: cmd
@@ -41,7 +41,7 @@ jobs:
     name: macOS arm64 (clang, generic)
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install image libraries
         run: brew install pkg-config libpng jpeg-turbo
@@ -58,7 +58,7 @@ jobs:
     name: Linux x64 (clang, generic)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install image libraries
         run: sudo apt-get update && sudo apt-get install -y clang make pkg-config libpng-dev libjpeg-turbo8-dev zlib1g-dev
