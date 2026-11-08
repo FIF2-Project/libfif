@@ -5,8 +5,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting! Questions about the file format itself belong to the
-        FIF2 specification at https://fif2.org.
+        Thanks for reporting! Questions about the file format itself belong to
+        https://fif2.org.
   - type: textarea
     id: version
     attributes:

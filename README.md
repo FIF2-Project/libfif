@@ -2,8 +2,8 @@
 
 **The reference encoder, decoder and command-line tool for the FIF2 fractal image format.**
 
-[**Format specification — fif2.org**](https://fif2.org) ·
-[**Project & news — fractalimagecompression.com**](https://www.fractalimagecompression.com) ·
+[**The FIF2 format — fif2.org**](https://fif2.org) ·
+[**What is fractal image compression? — fractalimagecompression.com**](https://www.fractalimagecompression.com) ·
 [Download](https://github.com/FIF2-Project/libfif/releases/latest) ·
 [Documentation](docs/)
 
@@ -200,13 +200,13 @@ A `static_assert` fails the build if the table and the context struct disagree.
 | [The fif tool](docs/cli.md) | every command and option, error messages |
 | [Library API](docs/api.md) | concepts, examples, function reference |
 | [Design notes](docs/design.md) | how the codec works, with measurements |
-| [FIF2 specification](https://fif2.org) | the normative file format |
+| [The FIF2 format](https://fif2.org) | the open format and its specification |
 
 ## Contributing
 
 Bug reports, files that decode wrongly and pull requests are welcome. For larger
 changes, please open an issue first. Questions about the format itself belong to
-the [FIF2 specification](https://fif2.org).
+[fif2.org](https://fif2.org).
 
 ## License
 
@@ -218,5 +218,4 @@ To be announced.
 - **FIF2 format**: Rezar Behzad
 
 Copyright © 2026 Oskar Behzadpour.
-More about fractal image compression, the history of the project and contact
-details: [fractalimagecompression.com](https://www.fractalimagecompression.com).
+New to the technique? [What is fractal image compression?](https://www.fractalimagecompression.com)

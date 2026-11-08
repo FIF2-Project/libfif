@@ -3,7 +3,7 @@
 How libfif encodes and decodes FIF2, and why: the measurements behind each
 design decision, including the ideas that were tried and removed.
 
-For the file format itself, see the specification at [fif2.org](https://fif2.org).
+For the file format itself, see [fif2.org](https://fif2.org).
 For using the tool and the library, see [cli.md](cli.md) and [api.md](api.md).
 
 ## How it encodes

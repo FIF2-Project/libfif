@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: FIF2 format specification
+  - name: The FIF2 format
     url: https://fif2.org
     about: Questions and proposals about the file format itself.
-  - name: Fractal Image Compression project
+  - name: What is fractal image compression?
     url: https://www.fractalimagecompression.com
-    about: General information, news and contact.
+    about: How the technique works, its history and advantages.
