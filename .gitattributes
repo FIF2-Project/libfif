@@ -1,0 +1,17 @@
+# Normalise line endings in the repository; check out natively.
+* text=auto eol=lf
+
+# Windows batch files must keep CRLF or cmd.exe can misparse labels.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Shell scripts must stay LF to run on macOS/Linux.
+*.sh text eol=lf
+
+# Binary formats
+*.fif binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.zip binary

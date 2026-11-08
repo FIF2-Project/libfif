@@ -1,0 +1,70 @@
+# Builds and smoke-tests libfif and fif on every push and pull request.
+# Release binaries are NOT built here. They are built and signed locally and
+# uploaded with `gh release create`.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    name: Windows x64 (clang, generic)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install image libraries (vcpkg, static)
+        shell: cmd
+        run: vcpkg install libpng libjpeg-turbo zlib --triplet x64-windows-static
+
+      - name: Build
+        shell: cmd
+        run: |
+          set VCPKG_ROOT=%VCPKG_INSTALLATION_ROOT%
+          call build.bat release generic
+
+      - name: Smoke test
+        shell: bash
+        run: ./tools/ci_smoke.sh ./fif.exe
+
+  macos:
+    name: macOS arm64 (clang, generic)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install image libraries
+        run: brew install pkg-config libpng jpeg-turbo
+
+      - name: Build
+        run: |
+          export PKG_CONFIG_PATH="$(brew --prefix jpeg-turbo)/lib/pkgconfig:$PKG_CONFIG_PATH"
+          make CXX=clang++ ARCH= -j"$(sysctl -n hw.ncpu)"
+
+      - name: Smoke test
+        run: ./tools/ci_smoke.sh ./fif
+
+  linux:
+    name: Linux x64 (clang, generic)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install image libraries
+        run: sudo apt-get update && sudo apt-get install -y clang make pkg-config libpng-dev libjpeg-turbo8-dev zlib1g-dev
+
+      - name: Build
+        run: make CXX=clang++ ARCH= -j"$(nproc)"
+
+      - name: Smoke test
+        run: ./tools/ci_smoke.sh ./fif

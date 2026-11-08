@@ -1,0 +1,22 @@
+name: Feature request
+description: Suggest an improvement to libfif or the fif tool.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Proposals that change the file format belong to the FIF2 specification at https://fif2.org.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered

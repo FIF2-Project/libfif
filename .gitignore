@@ -1,0 +1,31 @@
+# Build output
+*.o
+*.d
+*.a
+*.lib
+*.exe
+*.pdb
+*.ilk
+/fif
+/obj/
+/dist/
+
+# Local third-party libraries (use vcpkg / Homebrew instead)
+/vendor/
+
+# Images and FIF files produced while testing
+*.fif
+*.png
+*.jpg
+*.jpeg
+*.ppm
+*.pgm
+*.pnm
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+__pycache__/
+*.pyc
