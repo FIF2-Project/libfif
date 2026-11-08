@@ -5,7 +5,7 @@
 [**The FIF2 format — fif2.org**](https://fif2.org) ·
 [**What is fractal image compression? — fractalimagecompression.com**](https://www.fractalimagecompression.com) ·
 [Download](https://github.com/FIF2-Project/libfif/releases/latest) ·
-[Documentation](docs/)
+[Documentation](#documentation)
 
 [![CI](https://github.com/FIF2-Project/libfif/actions/workflows/ci.yml/badge.svg)](https://github.com/FIF2-Project/libfif/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/FIF2-Project/libfif?label=release)](https://github.com/FIF2-Project/libfif/releases/latest)
@@ -74,7 +74,7 @@ fif bench  photo.jpg -q 60                    # size, PSNR, MS-SSIM and speed in
 
 `-e 0..9` sets how hard the encoder searches. `--target-psnr` and `--target-bpp`
 hit a quality or size instead of a setting. `fif --help` and `fif help <command>`
-list everything. The full guide is in [docs/cli.md](docs/cli.md).
+list everything. The full guide is [Using the fif tool](https://fif2.org/lib-cli.html).
 
 ## Using the library
 
@@ -107,7 +107,7 @@ fif_image_free(&img);
 Link against `libfif.a` / `libfif.lib` with a C++ linker, plus `-lpng -ljpeg -lz`
 if the library was built with image I/O. Every function returns an
 `fif_status`, and `fif_status_string()` explains the code. See
-[docs/api.md](docs/api.md) for the five rules of the interface and the full
+[Using the library](https://fif2.org/lib-api.html) for the five rules of the interface and the full
 function reference.
 
 ## Building from source
@@ -141,7 +141,7 @@ build.bat debug | asan | clean
 
 `build.bat` finds vcpkg via `%VCPKG_ROOT%`, `%USERPROFILE%\vcpkg` or `C:\vcpkg`.
 Details, including why the static triplet is required, are in
-[docs/getting-started.md](docs/getting-started.md).
+[Getting started](https://fif2.org/lib-getting-started.html).
 
 ## How it works
 
@@ -196,11 +196,11 @@ A `static_assert` fails the build if the table and the context struct disagree.
 
 | Document | Contents |
 | --- | --- |
-| [Getting started](docs/getting-started.md) | building, first encode and decode, measuring quality |
-| [The fif tool](docs/cli.md) | every command and option, error messages |
-| [Library API](docs/api.md) | concepts, examples, function reference |
+| [Getting started](https://fif2.org/lib-getting-started.html) | building, first encode and decode, measuring quality |
+| [Using the fif tool](https://fif2.org/lib-cli.html) | every command and option, error messages |
+| [Using the library](https://fif2.org/lib-api.html) | concepts, examples, function reference |
 | [Design notes](docs/design.md) | how the codec works, with measurements |
-| [The FIF2 format](https://fif2.org) | the open format and its specification |
+| [The FIF2 format](https://fif2.org) | the open format; [binary specification](https://fif2.org/fif2-spec.html) |
 
 ## Contributing
 

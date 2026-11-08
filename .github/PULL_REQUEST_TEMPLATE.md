@@ -9,6 +9,6 @@
 - [ ] Builds without warnings (`make` / `build.bat`)
 - [ ] Encode + decode tested, also with the sanitiser build (`make san`)
 - [ ] Existing `.fif` files still decode (no unintended format change)
-- [ ] `fif help` text and `docs/` updated for new or changed options
+- [ ] `fif help` text updated for new or changed options (the docs on fif2.org follow separately)
 - [ ] `src/ctxtable.inc` retrained if the context layout changed
 - [ ] `CHANGELOG.md` updated under "Unreleased"
