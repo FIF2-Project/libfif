@@ -6,8 +6,15 @@
 *.exe
 *.pdb
 *.ilk
+*.exp
+*.dll
+*.dylib
+*.so
+*.so.*
 /fif
+/sdk_smoke
 /obj/
+/obj-shared/
 /dist/
 
 # Local third-party libraries (use vcpkg / Homebrew instead)

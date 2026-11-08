@@ -18,7 +18,11 @@ First public release.
   progressive prefixes, per-tile decoding, damaged-file tolerance.
 - `fif` tool: `encode`, `decode`, `info`, `thumbnail`, `compare`, `bench`,
   `version`, `debug`.
-- Prebuilt binaries for Windows x64 and macOS universal, plus SDK packages.
+- Shared library: `libfif.dll` (+ import library `libfif.lib`), `libfif.3.dylib`,
+  `libfif.so.3`, exporting only the `fif_*` C API (`FIF_API`). On Windows the
+  static library is now called `libfif_static.lib`.
+- Prebuilt binaries for Windows x64 and macOS universal, plus SDK packages with
+  the shared and the static library.
 
 [Unreleased]: https://github.com/FIF2-Project/libfif/compare/libfif-v3.5.0...HEAD
 [libfif 3.5.0 / fif 2.5.0]: https://github.com/FIF2-Project/libfif/releases/tag/libfif-v3.5.0

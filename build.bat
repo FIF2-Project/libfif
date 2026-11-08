@@ -13,9 +13,11 @@ rem ------------------------------------------------------------------------
 rem ---------------------------------------------------------------------------
 rem  libfif - Windows build
 rem
-rem    build.bat [release|debug|asan] [native|avx2|avx|sse2|generic] [clean]
+rem    build.bat [release|debug|asan] [native|avx2|avx|sse2|generic] [shared] [clean]
 rem
-rem  Defaults: release native.  Produces libfif.lib and fif.exe in this folder.
+rem  Defaults: release native.  Produces libfif_static.lib and fif.exe in this
+rem  folder; with "shared" also libfif.dll, its import library libfif.lib and
+rem  its debug symbols libfif.pdb.
 rem
 rem  Needs clang++ (ships with the "C++ Clang tools for Windows" component of
 rem  Visual Studio / Build Tools).  PNG and JPEG support is compiled in when a
@@ -34,6 +36,7 @@ pushd "%~dp0"
 set "CFG=release"
 set "ARCHSEL=native"
 set "DOCLEAN=0"
+set "SHARED=0"
 
 :parseargs
 if "%~1"=="" goto parsed
@@ -45,6 +48,7 @@ if /i "%~1"=="avx2"     set "ARCHSEL=avx2"    & shift & goto parseargs
 if /i "%~1"=="avx"      set "ARCHSEL=avx"     & shift & goto parseargs
 if /i "%~1"=="sse2"     set "ARCHSEL=sse2"    & shift & goto parseargs
 if /i "%~1"=="generic"  set "ARCHSEL=generic" & shift & goto parseargs
+if /i "%~1"=="shared"   set "SHARED=1"        & shift & goto parseargs
 if /i "%~1"=="clean"    set "DOCLEAN=1"       & shift & goto parseargs
 echo build: unknown option "%~1"
 exit /b 2
@@ -53,7 +57,9 @@ exit /b 2
 if "%DOCLEAN%"=="1" (
     echo cleaning
     if exist obj rmdir /s /q obj
-    del /q libfif.lib fif.exe fif.pdb fif.ilk 2>nul
+    if exist obj-shared rmdir /s /q obj-shared
+    del /q libfif_static.lib fif.exe fif.pdb fif.ilk 2>nul
+    del /q libfif.dll libfif.lib libfif.exp libfif.pdb 2>nul
     exit /b 0
 )
 
@@ -129,12 +135,32 @@ echo cc          tools\fif_cli.cpp
 %CXX% %CXXFLAGS% %CPPFLAGS% -c tools\fif_cli.cpp -o obj\fif_cli.o || exit /b 1
 
 rem ---- archive and link -----------------------------------------------------
-echo ar          libfif.lib
-if exist libfif.lib del /q libfif.lib
-llvm-ar rcs libfif.lib !OBJS! 2>nul || lib /nologo /out:libfif.lib !OBJS! >nul || exit /b 1
+rem  The static library is libfif_static.lib; the plain name libfif.lib belongs
+rem  to the import library of libfif.dll (the zlib / CMake convention).
+echo ar          libfif_static.lib
+if exist libfif_static.lib del /q libfif_static.lib
+llvm-ar rcs libfif_static.lib !OBJS! 2>nul || lib /nologo /out:libfif_static.lib !OBJS! >nul || exit /b 1
 
 echo link        fif.exe
-%CXX% %CXXFLAGS% -o fif.exe obj\fif_cli.o libfif.lib %LDLIBS% -lshell32 || exit /b 1
+%CXX% %CXXFLAGS% -o fif.exe obj\fif_cli.o libfif_static.lib %LDLIBS% -lshell32 || exit /b 1
+
+rem ---- shared library (optional) --------------------------------------------
+rem  Compiled a second time with FIF_BUILD_SHARED, so that only these objects
+rem  carry dllexport: fif.exe above stays free of exports.  The image libraries
+rem  and the C runtime are linked into the DLL; the C API keeps allocation and
+rem  release inside it (fif_free, fif_image_free), so any caller runtime works.
+rem  goto rather than an if-block: an expanded path with ")" would end the block.
+if not "%SHARED%"=="1" goto noshared
+if not exist obj-shared mkdir obj-shared
+set "SOBJS="
+for %%F in (%SRCS%) do (
+    echo cc shared   %%F
+    %CXX% %CXXFLAGS% -g -gcodeview %CPPFLAGS% -DFIF_BUILD_SHARED -c "%%F" -o "obj-shared\%%~nF.o" || exit /b 1
+    set "SOBJS=!SOBJS! obj-shared\%%~nF.o"
+)
+echo link        libfif.dll
+%CXX% %CXXFLAGS% -g -shared -o libfif.dll !SOBJS! %LDLIBS% -Wl,/implib:libfif.lib -Wl,/debug -Wl,/pdb:libfif.pdb || exit /b 1
+:noshared
 
 echo.
 rem  setlocal restores the caller directory on exit, so the pushd above needs

@@ -16,6 +16,22 @@
 #include <stddef.h>
 #include <stdint.h>
 
+/* FIF_API marks the functions libfif exports.
+ * Building the shared library: define FIF_BUILD_SHARED (the build scripts do).
+ * Using libfif, static or shared: nothing to define.  On Windows, FIF_USE_DLL
+ * may be defined to import the functions from libfif.dll directly. */
+#if defined(FIF_BUILD_SHARED)
+#  if defined(_WIN32)
+#    define FIF_API __declspec(dllexport)
+#  else
+#    define FIF_API __attribute__((visibility("default")))
+#  endif
+#elif defined(FIF_USE_DLL) && defined(_WIN32)
+#  define FIF_API __declspec(dllimport)
+#else
+#  define FIF_API
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -304,17 +320,17 @@ typedef struct {
     size_t stride;          /* bytes per row */
 } fif_image;
 
-void fif_encode_options_defaults(fif_encode_options *opts);
-void fif_decode_options_defaults(fif_decode_options *opts);
+FIF_API void fif_encode_options_defaults(fif_encode_options *opts);
+FIF_API void fif_decode_options_defaults(fif_decode_options *opts);
 
-fif_status fif_image_alloc(fif_image *img, int width, int height, int channels);
-void fif_image_free(fif_image *img);
+FIF_API fif_status fif_image_alloc(fif_image *img, int width, int height, int channels);
+FIF_API void fif_image_free(fif_image *img);
 
 /* Encodes into a freshly malloc'd buffer; caller releases it with fif_free. */
-fif_status fif_encode(const fif_image *img, const fif_encode_options *opts,
+FIF_API fif_status fif_encode(const fif_image *img, const fif_encode_options *opts,
                       uint8_t **out_data, size_t *out_size, fif_stats *stats);
 
-fif_status fif_decode(const uint8_t *data, size_t size,
+FIF_API fif_status fif_decode(const uint8_t *data, size_t size,
                       const fif_decode_options *opts,
                       fif_image *out_img, fif_stats *stats);
 
@@ -368,7 +384,7 @@ typedef struct {
     int chunk_crc_ok;
 } fif_info;
 
-fif_status fif_get_info(const uint8_t *data, size_t size, fif_info *info);
+FIF_API fif_status fif_get_info(const uint8_t *data, size_t size, fif_info *info);
 
 /* One tile: where it is in the picture (coded pixels, clipped to the
  * picture) and where its two layers are in the file.  An offset of -1 means
@@ -379,17 +395,17 @@ typedef struct {
     int64_t base_offset, base_size;
     int64_t detail_offset, detail_size;
 } fif_tile;
-fif_status fif_get_tile(const uint8_t *data, size_t size, int index, fif_tile *out);
+FIF_API fif_status fif_get_tile(const uint8_t *data, size_t size, int index, fif_tile *out);
 
 /* A copy of the file with the compressed sections unpacked and their bits in
  * the header's compressed field cleared, freed with fif_free.  Every
  * accessor works on the copy; for a file without compressed sections it is a plain copy.  An
  * encrypted section is copied as it is, still encrypted. */
-fif_status fif_unpack(const uint8_t *data, size_t size, uint8_t **out_data, size_t *out_size);
+FIF_API fif_status fif_unpack(const uint8_t *data, size_t size, uint8_t **out_data, size_t *out_size);
 
 /* The index-th chunk, in file order.  Pointers point into `data`.  An index
  * past the last chunk returns FIF_ERR_ARG. */
-fif_status fif_get_chunk(const uint8_t *data, size_t size, int index, fif_chunk *out);
+FIF_API fif_status fif_get_chunk(const uint8_t *data, size_t size, int index, fif_chunk *out);
 
 /* A file may carry any number of thumbnails, each a complete image file of
  * its own, stored unchanged, in any size and format.  The format is a
@@ -407,14 +423,14 @@ typedef struct {
 
 /* The index-th thumbnail, in file order, without decoding it.  FIF_ERR_ARG
  * past the last one; FIF_ERR_FORMAT if it is damaged or cut off. */
-fif_status fif_get_thumbnail(const uint8_t *data, size_t size, int index, fif_thumbnail *out);
+FIF_API fif_status fif_get_thumbnail(const uint8_t *data, size_t size, int index, fif_thumbnail *out);
 /* The index of the smallest thumbnail whose longer edge is at least
  * `min_edge`, or of the largest when none is that big.  `format` restricts
  * the choice to one code ("JPEG"); NULL takes any.  -1 when there is none. */
-int fif_find_thumbnail(const uint8_t *data, size_t size, int min_edge, const char *format);
+FIF_API int fif_find_thumbnail(const uint8_t *data, size_t size, int min_edge, const char *format);
 /* The index-th thumbnail decoded to pixels.  JPEG only, and needs libjpeg in
  * the build; other formats return FIF_ERR_UNSUPPORTED. */
-fif_status fif_decode_thumbnail(const uint8_t *data, size_t size, int index, fif_image *out);
+FIF_API fif_status fif_decode_thumbnail(const uint8_t *data, size_t size, int index, fif_image *out);
 
 /* One entry of the raw-data section: a file in another format (a camera raw,
  * the original JPEG, ...) carried alongside the fractal code.  The encoder
@@ -431,26 +447,26 @@ typedef struct {
     int complete;
 } fif_raw_entry;
 
-fif_status fif_get_raw(const uint8_t *data, size_t size, int index, fif_raw_entry *out);
+FIF_API fif_status fif_get_raw(const uint8_t *data, size_t size, int index, fif_raw_entry *out);
 /* Number of raw entries as the raw section states it; -1 when the section is
  * encrypted or damaged. */
-int fif_raw_count(const uint8_t *data, size_t size);
+FIF_API int fif_raw_count(const uint8_t *data, size_t size);
 
 /* Collects the adapted context statistics of every tile encoded from now on,
  * and writes the accumulated table.  Used to build the codec's default
  * probabilities; not part of normal encoding. */
-void fif_context_training_begin(void);
-int  fif_context_training_write(const char *path);
+FIF_API void fif_context_training_begin(void);
+FIF_API int  fif_context_training_write(const char *path);
 
-void fif_free(void *p);
-const char *fif_status_string(fif_status s);
+FIF_API void fif_free(void *p);
+FIF_API const char *fif_status_string(fif_status s);
 
 /* Name of the SIMD kernel set this library was compiled for: "neon",
  * "avx2+fma", "avx2", "avx+fma", "avx", "sse2+fma", "sse2" or "scalar".
  * The kernels are encoder-side only, so the set changes how fast a file is
  * produced and, through float reassociation, which domains the search settles
  * on - but nothing on the decode path calls them. */
-const char *fif_simd_name(void);
+FIF_API const char *fif_simd_name(void);
 
 /* How many threads an encode or decode would run with this `threads` option
  * (0 = let libfif decide), and how many cores the machine reports.  A caller
@@ -458,15 +474,15 @@ const char *fif_simd_name(void);
  * reproducing the rule; fif_cpu_cores returns 0 when the system does not say.
  * The answer is the size of the thread pool: a parallel step with fewer items
  * than that starts only as many threads as it has items. */
-int fif_thread_count(int threads);
-int fif_cpu_cores(void);
+FIF_API int fif_thread_count(int threads);
+FIF_API int fif_cpu_cores(void);
 
 /* ---- image i/o helpers (pnm always, png/jpeg when linked) ---- */
-fif_status fif_image_load(const char *path, fif_image *out);
+FIF_API fif_status fif_image_load(const char *path, fif_image *out);
 /* The format follows the extension: .png, .jpg/.jpeg (quality 90), .ppm/.pgm/
  * .pnm.  Anything else, or a format missing from the build, is
  * FIF_ERR_UNSUPPORTED - never a file whose contents do not match its name. */
-fif_status fif_image_save(const char *path, const fif_image *img);
+FIF_API fif_status fif_image_save(const char *path, const fif_image *img);
 
 /* Reduce an image to w x h before encoding.  Every output pixel is the mean of
  * the input pixels it covers - an exact area filter, including the fractional
@@ -477,13 +493,13 @@ fif_status fif_image_save(const char *path, const fif_image *img);
  * Downscaling only.  A target larger than the source in either axis returns
  * FIF_ERR_ARG rather than inventing pixels; `out` is allocated by this call
  * and belongs to the caller. */
-fif_status fif_image_downscale(const fif_image *src, int w, int h,
+FIF_API fif_status fif_image_downscale(const fif_image *src, int w, int h,
                                fif_image *out);
 
 /* ---- quality metrics ---- */
-double fif_psnr(const fif_image *a, const fif_image *b);
-double fif_ssim(const fif_image *a, const fif_image *b);
-double fif_ms_ssim(const fif_image *a, const fif_image *b);
+FIF_API double fif_psnr(const fif_image *a, const fif_image *b);
+FIF_API double fif_ssim(const fif_image *a, const fif_image *b);
+FIF_API double fif_ms_ssim(const fif_image *a, const fif_image *b);
 
 #ifdef __cplusplus
 }

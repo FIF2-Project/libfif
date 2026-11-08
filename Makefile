@@ -59,7 +59,21 @@ LIB_SRC  := src/pool.cpp src/encode.cpp src/serialize.cpp src/decode.cpp \
             src/deblock.cpp src/symtable.cpp src/ctxtrain.cpp \
             src/debug.cpp src/format.cpp src/exif.cpp
 LIB_OBJ  := $(LIB_SRC:.cpp=.o)
+LIB_PIC  := $(LIB_SRC:.cpp=.pic.o)
 CLI_OBJ  := tools/fif_cli.o
+
+# Shared library: soname follows the library's major version.
+SOMAJOR  := $(shell sed -n 's/^\#define FIF_VERSION_MAJOR //p' include/fif/fif.h)
+SOMINOR  := $(shell sed -n 's/^\#define FIF_VERSION_MINOR //p' include/fif/fif.h)
+ifeq ($(shell uname -s),Darwin)
+  SHLIB      := libfif.$(SOMAJOR).dylib
+  SHLIB_LINK := libfif.dylib
+  SHFLAGS    := -dynamiclib -install_name @rpath/$(SHLIB)                 -compatibility_version $(SOMAJOR).0 -current_version $(SOMAJOR).$(SOMINOR)
+else
+  SHLIB      := libfif.so.$(SOMAJOR)
+  SHLIB_LINK := libfif.so
+  SHFLAGS    := -shared -Wl,-soname,$(SHLIB)
+endif
 
 all: fif libfif.a
 
@@ -70,10 +84,22 @@ libfif.a: $(LIB_OBJ)
 fif: $(CLI_OBJ) libfif.a
 	$(CXX) $(CXXFLAGS) -o $@ $(CLI_OBJ) libfif.a $(LDLIBS) -lpthread
 
+# The shared library is compiled separately, with FIF_BUILD_SHARED and hidden
+# visibility, so that only the FIF_API functions are exported and the static
+# library and fif stay exactly as they were.
+shared: $(SHLIB)
+
+$(SHLIB): $(LIB_PIC)
+	$(CXX) $(CXXFLAGS) $(SHFLAGS) -o $@ $^ $(LDLIBS) -lpthread
+	ln -sf $@ $(SHLIB_LINK)
+
+%.pic.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(DEPFLAGS) $(CPPFLAGS) -DFIF_BUILD_SHARED -fPIC -fvisibility=hidden -c $< -o $@
+
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(DEPFLAGS) $(CPPFLAGS) -c $< -o $@
 
--include $(LIB_OBJ:.o=.d) $(CLI_OBJ:.o=.d)
+-include $(LIB_OBJ:.o=.d) $(LIB_PIC:.o=.d) $(CLI_OBJ:.o=.d)
 
 # Address/UB sanitised build for correctness runs.
 san:
@@ -82,5 +108,6 @@ san:
 
 clean:
 	rm -f $(LIB_OBJ) $(CLI_OBJ) $(LIB_OBJ:.o=.d) $(CLI_OBJ:.o=.d) libfif.a fif
+	rm -f $(LIB_PIC) $(LIB_PIC:.o=.d) $(SHLIB) $(SHLIB_LINK)
 
-.PHONY: all clean san
+.PHONY: all clean san shared

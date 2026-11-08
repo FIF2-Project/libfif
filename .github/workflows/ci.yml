@@ -31,11 +31,18 @@ jobs:
         shell: cmd
         run: |
           set VCPKG_ROOT=%VCPKG_INSTALLATION_ROOT%
-          call build.bat release generic
+          call build.bat release generic shared
 
       - name: Smoke test
         shell: bash
         run: ./tools/ci_smoke.sh ./fif.exe
+
+      - name: Shared library (exports + C program)
+        shell: bash
+        run: |
+          ./tools/ci_exports.sh libfif.dll
+          clang -std=c11 -O2 -Iinclude tools/sdk_smoke.c libfif.lib -o sdk_smoke.exe
+          ./sdk_smoke.exe
 
   macos:
     name: macOS arm64 (clang, generic)
@@ -49,10 +56,16 @@ jobs:
       - name: Build
         run: |
           export PKG_CONFIG_PATH="$(brew --prefix jpeg-turbo)/lib/pkgconfig:$PKG_CONFIG_PATH"
-          make CXX=clang++ ARCH= -j"$(sysctl -n hw.ncpu)"
+          make CXX=clang++ ARCH= -j"$(sysctl -n hw.ncpu)" all shared
 
       - name: Smoke test
         run: ./tools/ci_smoke.sh ./fif
+
+      - name: Shared library (exports + C program)
+        run: |
+          ./tools/ci_exports.sh libfif.3.dylib
+          clang -std=c11 -O2 -Iinclude tools/sdk_smoke.c -L. -lfif -Wl,-rpath,@loader_path -o sdk_smoke
+          ./sdk_smoke
 
   linux:
     name: Linux x64 (clang, generic)
@@ -64,7 +77,13 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y clang make pkg-config libpng-dev libjpeg-turbo8-dev zlib1g-dev
 
       - name: Build
-        run: make CXX=clang++ ARCH= -j"$(nproc)"
+        run: make CXX=clang++ ARCH= -j"$(nproc)" all shared
 
       - name: Smoke test
         run: ./tools/ci_smoke.sh ./fif
+
+      - name: Shared library (exports + C program)
+        run: |
+          ./tools/ci_exports.sh libfif.so.3
+          clang -std=c11 -O2 -Iinclude tools/sdk_smoke.c -L. -lfif -Wl,-rpath,'$ORIGIN' -o sdk_smoke
+          ./sdk_smoke

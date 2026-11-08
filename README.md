@@ -54,8 +54,8 @@ Prebuilt binaries are attached to every
 | --- | --- |
 | `fif-<ver>-windows-x64.zip` | `fif.exe` command-line tool, Windows 10/11, 64-bit |
 | `fif-<ver>-macos-universal.zip` | `fif` command-line tool, macOS 11+, Apple Silicon and Intel |
-| `libfif-<ver>-sdk-windows-x64.zip` | header + static library for Windows |
-| `libfif-<ver>-sdk-macos-universal.zip` | header + static library for macOS |
+| `libfif-<ver>-sdk-windows-x64.zip` | header, `libfif.dll` + import library, static library |
+| `libfif-<ver>-sdk-macos-universal.zip` | header, `libfif.3.dylib`, static library |
 | `SHA256SUMS.txt` | checksums for verifying the downloads |
 
 Release builds target generic x86-64 and ARM64, so they run on any 64-bit CPU.
@@ -104,8 +104,17 @@ if (fif_encode(&img, &eo, &data, &size, NULL) == FIF_OK) {
 fif_image_free(&img);
 ```
 
-Link against `libfif.a` / `libfif.lib` with a C++ linker, plus `-lpng -ljpeg -lz`
-if the library was built with image I/O. Every function returns an
+The library comes in two forms:
+
+| | Windows | macOS | Linux (source build) |
+| --- | --- | --- | --- |
+| **shared**, recommended | `libfif.dll` + import library `libfif.lib` | `libfif.3.dylib` | `libfif.so.3` |
+| **static** | `libfif_static.lib` (`/MT` Release only) | `libfif.a` | `libfif.a` |
+
+The shared library has the image libraries built in and exports only the
+`fif_*` functions. It works with any compiler setting, Debug or Release, and
+from any language with a C FFI. The static library must be linked with a C++
+linker plus libpng, libjpeg and zlib. Every function returns an
 `fif_status`, and `fif_status_string()` explains the code. See
 [Using the library](https://fif2.org/lib-api.html) for the five rules of the interface and the full
 function reference.
@@ -127,6 +136,7 @@ sudo apt install clang make pkg-config libpng-dev libjpeg-turbo8-dev
 
 make            # builds ./fif and ./libfif.a, tuned for this machine
 make ARCH=      # generic build that runs on any CPU of the architecture
+make shared     # also builds libfif.3.dylib (macOS) / libfif.so.3 (Linux)
 make san        # address + undefined-behaviour sanitiser build
 ```
 
@@ -134,8 +144,9 @@ make san        # address + undefined-behaviour sanitiser build
 
 ```bat
 vcpkg install libpng libjpeg-turbo zlib --triplet x64-windows-static
-build.bat                       :: release, tuned for this machine
+build.bat                       :: fif.exe + libfif_static.lib, tuned for this machine
 build.bat release generic       :: runs on any x64 CPU
+build.bat release shared        :: also libfif.dll, libfif.lib (import), libfif.pdb
 build.bat debug | asan | clean
 ```
 
