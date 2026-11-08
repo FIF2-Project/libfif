@@ -204,9 +204,9 @@ A `static_assert` fails the build if the table and the context struct disagree.
 
 ## Contributing
 
-Bug reports, test files that decode wrongly and pull requests are welcome. Please
-read [CONTRIBUTING.md](CONTRIBUTING.md) first. Questions about the format itself
-belong to the [FIF2 specification](https://fif2.org).
+Bug reports, files that decode wrongly and pull requests are welcome. For larger
+changes, please open an issue first. Questions about the format itself belong to
+the [FIF2 specification](https://fif2.org).
 
 ## License
 
