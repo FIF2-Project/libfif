@@ -8,6 +8,7 @@
 # Contact:         oskar@fractalimagecompression.com
 #
 # Copyright (c) 2026 Oskar Behzadpour
+# SPDX-License-Identifier: MIT
 # ------------------------------------------------------------------------
 
 # Smoke test used by CI: encode, inspect and decode a generated picture.

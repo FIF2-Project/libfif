@@ -7,6 +7,7 @@
  * Contact:         oskar@fractalimagecompression.com
  *
  * Copyright (c) 2026 Oskar Behzadpour
+ * SPDX-License-Identifier: MIT
  * ---------------------------------------------------------------------- */
 
 /* FIF2 container 3.1: writing and parsing the header and the sections, and the

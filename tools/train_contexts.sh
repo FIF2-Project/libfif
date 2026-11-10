@@ -8,6 +8,7 @@
 # Contact:         oskar@fractalimagecompression.com
 #
 # Copyright (c) 2026 Oskar Behzadpour
+# SPDX-License-Identifier: MIT
 # ------------------------------------------------------------------------
 
 # Rebuilds src/ctxtable.inc from the context statistics of a training set.

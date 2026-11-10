@@ -8,6 +8,7 @@
 # Contact:         oskar@fractalimagecompression.com
 #
 # Copyright (c) 2026 Oskar Behzadpour
+# SPDX-License-Identifier: MIT
 # ------------------------------------------------------------------------
 
 """Accumulates per-run context statistics and emits the default table."""

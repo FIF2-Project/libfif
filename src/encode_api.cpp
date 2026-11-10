@@ -7,6 +7,7 @@
  * Contact:         oskar@fractalimagecompression.com
  *
  * Copyright (c) 2026 Oskar Behzadpour
+ * SPDX-License-Identifier: MIT
  * ---------------------------------------------------------------------- */
 
 /* fif_encode: settles the parameters, runs the tile encoder (encode.cpp) over

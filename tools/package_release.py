@@ -8,6 +8,7 @@
 # Contact:         oskar@fractalimagecompression.com
 #
 # Copyright (c) 2026 Oskar Behzadpour
+# SPDX-License-Identifier: MIT
 # ------------------------------------------------------------------------
 """Packages already-built (and signed) release binaries into the release zips.
 
@@ -248,6 +249,10 @@ FIF2 file contains, and measures quality and speed.
 
 {IJG_ACK} See THIRD-PARTY-NOTICES.txt for the licences of the included
 libraries.
+
+## License
+
+fif is released under the MIT License, see LICENSE.
 """
 
 
@@ -307,6 +312,10 @@ links its own.
 ## Third-party software
 
 {IJG_ACK} See THIRD-PARTY-NOTICES.txt.
+
+## License
+
+libfif is released under the MIT License, see LICENSE.
 """
 
 

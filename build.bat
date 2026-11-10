@@ -8,6 +8,7 @@ rem Web:             www.FractalImageCompression.com
 rem Contact:         oskar@fractalimagecompression.com
 rem
 rem Copyright (c) 2026 Oskar Behzadpour
+rem SPDX-License-Identifier: MIT
 rem ------------------------------------------------------------------------
 
 rem ---------------------------------------------------------------------------

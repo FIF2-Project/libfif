@@ -7,6 +7,7 @@
  * Contact:         oskar@fractalimagecompression.com
  *
  * Copyright (c) 2026 Oskar Behzadpour
+ * SPDX-License-Identifier: MIT
  * ---------------------------------------------------------------------- */
 
 /* SDK smoke test: a plain C program against the public API only.

@@ -7,6 +7,7 @@
  * Contact:         oskar@fractalimagecompression.com
  *
  * Copyright (c) 2026 Oskar Behzadpour
+ * SPDX-License-Identifier: MIT
  * ---------------------------------------------------------------------- */
 
 #include "fif_internal.h"
