@@ -22,7 +22,7 @@ First public release, under the MIT License.
   `libfif.so.3`, exporting only the `fif_*` C API (`FIF_API`). On Windows the
   static library is now called `libfif_static.lib`.
 - Prebuilt binaries for Windows x64: signed `fif.exe`, plus an SDK package with
-  the shared and the static library. macOS universal builds follow.
+  the shared and the static library.
 
 [Unreleased]: https://github.com/FIF2-Project/libfif/compare/libfif-v3.5.0...HEAD
 [libfif 3.5.0 / fif 2.5.0]: https://github.com/FIF2-Project/libfif/releases/tag/libfif-v3.5.0
