@@ -54,9 +54,9 @@ Prebuilt binaries are attached to every
 | File | Contents |
 | --- | --- |
 | `fif-<ver>-windows-x64.zip` | `fif.exe` command-line tool, Windows 10/11, 64-bit |
-| `fif-<ver>-macos-universal.zip` | `fif` command-line tool, macOS 11+, Apple Silicon and Intel |
+| `fif-<ver>-macos-universal.zip` | *coming soon*: `fif` command-line tool, macOS 11+, Apple Silicon and Intel |
 | `libfif-<ver>-sdk-windows-x64.zip` | header, `libfif.dll` + import library, static library |
-| `libfif-<ver>-sdk-macos-universal.zip` | header, `libfif.3.dylib`, static library |
+| `libfif-<ver>-sdk-macos-universal.zip` | *coming soon*: header, `libfif.3.dylib`, static library |
 | `SHA256SUMS.txt` | checksums for verifying the downloads |
 
 Release builds target generic x86-64 and ARM64, so they run on any 64-bit CPU.
